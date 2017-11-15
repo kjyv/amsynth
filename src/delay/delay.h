@@ -25,7 +25,6 @@
 class Delay {
     public:
         float sampleRate;
-        float paramSampleDelay;
 
         Delay(int size);
         virtual ~Delay();
@@ -35,7 +34,7 @@ class Delay {
         void setParamFeedback(float value);
 
         void process(float *audio, float* dest, unsigned buffer_size_, int stride);
-        void tick(int i, float* audio, float* dest);
+        void tick(int i, int stride, float* audio, float* dest);
 
     protected:
         Memory* memory_;
@@ -43,6 +42,8 @@ class Delay {
         float current_wet_;
         float current_dry_;
         float current_period_;
+        float new_feedback;
+        float new_sample_delay;
 };
 
 #endif // DELAY_H

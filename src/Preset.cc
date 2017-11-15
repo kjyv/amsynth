@@ -95,7 +95,7 @@ Preset::Preset			(const std::string name)
 	mParameters.push_back (Parameter		("amp_vel_sens",		kAmsynthParameter_AmpVelocityAmount, 1));
 	mParameters.push_back (Parameter		("portamento_mode",		kAmsynthParameter_PortamentoMode, PortamentoModeAlways));
 	mParameters.push_back (Parameter		("delay_wet",			kAmsynthParameter_DelayWet));
-	mParameters.push_back (Parameter		("delay_tempo",			kAmsynthParameter_DelayFrequency));
+	mParameters.push_back (Parameter		("delay_frequency",		kAmsynthParameter_DelayFrequency));
 	mParameters.push_back (Parameter		("delay_feedback",		kAmsynthParameter_DelayFeedback));
 }
 

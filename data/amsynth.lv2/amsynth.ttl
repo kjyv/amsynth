@@ -654,8 +654,8 @@
         a lv2:InputPort ,
             lv2:ControlPort ;
         lv2:index 46 ;
-        lv2:symbol "delay_tempo" ;
-        lv2:name "Delay Tempo" ;
+        lv2:symbol "delay_frequency" ;
+        lv2:name "Delay Frequency" ;
         lv2:portProperty epp:hasStrictBounds ;
         lv2:default 0.000000 ;
         lv2:minimum 0.000000 ;
