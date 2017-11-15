@@ -94,6 +94,9 @@ Preset::Preset			(const std::string name)
 	mParameters.push_back (Parameter		("filter_vel_sens",		kAmsynthParameter_FilterKeyVelocityAmount, 1));
 	mParameters.push_back (Parameter		("amp_vel_sens",		kAmsynthParameter_AmpVelocityAmount, 1));
 	mParameters.push_back (Parameter		("portamento_mode",		kAmsynthParameter_PortamentoMode, PortamentoModeAlways));
+	mParameters.push_back (Parameter		("delay_wet",			kAmsynthParameter_DelayWet));
+	mParameters.push_back (Parameter		("delay_tempo",			kAmsynthParameter_DelayFrequency));
+	mParameters.push_back (Parameter		("delay_feedback",		kAmsynthParameter_DelayFeedback));
 }
 
 Preset&
@@ -121,7 +124,7 @@ Preset::isEqual(const Preset &rhs)
 	return getName() == rhs.getName();
 }
 
-Parameter & 
+Parameter &
 Preset::getParameter(const std::string name)
 {
 	typedef std::map<std::string, size_t> name_map_t;
@@ -167,15 +170,15 @@ Preset::fromString(const std::string &str)
 	std::stringstream stream (str);
 
 	std::string buffer;
-  
+
 	stream >> buffer;
-  
+
 	if (buffer != "amSynth1.0preset") return false;
-  
+
 	stream >> buffer;
 	if (buffer == "<preset>") {
 		stream >> buffer;
-		
+
 		//get the preset's name
 		stream >> buffer;
 		std::string presetName;
@@ -186,8 +189,8 @@ Preset::fromString(const std::string &str)
 			presetName += buffer;
 			stream >> buffer;
 		}
-		setName(presetName); 
-		
+		setName(presetName);
+
 		//get the parameters
 		while (buffer == "<parameter>") {
 			std::string name;
@@ -206,7 +209,7 @@ void get_parameter_properties(int parameter_index, double *minimum, double *maxi
 {
     Preset preset;
     Parameter &parameter = preset.getParameter(parameter_index);
-    
+
     if (minimum) {
         *minimum = parameter.getMin();
     }
@@ -252,7 +255,7 @@ int parameter_get_display (int parameter_index, float parameter_value, char *buf
 	Parameter parameter = _preset.getParameter(parameter_index);
 	parameter.setValue(parameter_value);
 	float real_value = parameter.getControlValue();
-	
+
 	switch (parameter_index) {
 		case kAmsynthParameter_AmpEnvAttack:
 		case kAmsynthParameter_AmpEnvDecay:

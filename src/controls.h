@@ -29,9 +29,9 @@ typedef enum {
 	kAmsynthParameter_AmpEnvDecay              = 1,
 	kAmsynthParameter_AmpEnvSustain            = 2,
 	kAmsynthParameter_AmpEnvRelease            = 3,
-	
+
 	kAmsynthParameter_Oscillator1Waveform      = 4,
-	
+
 	kAmsynthParameter_FilterEnvAttack          = 5,
 	kAmsynthParameter_FilterEnvDecay           = 6,
 	kAmsynthParameter_FilterEnvSustain         = 7,
@@ -39,38 +39,38 @@ typedef enum {
 	kAmsynthParameter_FilterResonance          = 9,
 	kAmsynthParameter_FilterEnvAmount          = 10,
 	kAmsynthParameter_FilterCutoff             = 11,
-	
+
 	kAmsynthParameter_Oscillator2Detune        = 12,
 	kAmsynthParameter_Oscillator2Waveform      = 13,
-	
+
 	kAmsynthParameter_MasterVolume             = 14,
-	
+
 	kAmsynthParameter_LFOFreq                  = 15,
 	kAmsynthParameter_LFOWaveform              = 16,
-	
+
 	kAmsynthParameter_Oscillator2Octave        = 17,
 	kAmsynthParameter_OscillatorMix            = 18,
-	
+
 	kAmsynthParameter_LFOToOscillators         = 19,
 	kAmsynthParameter_LFOToFilterCutoff        = 20,
 	kAmsynthParameter_LFOToAmp                 = 21,
-	
+
 	kAmsynthParameter_OscillatorMixRingMod     = 22,
-	
+
 	kAmsynthParameter_Oscillator1Pulsewidth    = 23,
 	kAmsynthParameter_Oscillator2Pulsewidth    = 24,
-	
+
 	kAmsynthParameter_ReverbRoomsize           = 25,
 	kAmsynthParameter_ReverbDamp               = 26,
 	kAmsynthParameter_ReverbWet                = 27,
 	kAmsynthParameter_ReverbWidth              = 28,
-	
+
 	kAmsynthParameter_AmpDistortion            = 29,
-	
+
 	kAmsynthParameter_Oscillator2Sync          = 30,
 
 	kAmsynthParameter_PortamentoTime           = 31,
-	
+
 	kAmsynthParameter_KeyboardMode             = 32,
 
 	kAmsynthParameter_Oscillator2Pitch         = 33,
@@ -81,10 +81,14 @@ typedef enum {
 
 	kAmsynthParameter_FilterKeyTrackAmount     = 37,
 	kAmsynthParameter_FilterKeyVelocityAmount  = 38,
-	
+
 	kAmsynthParameter_AmpVelocityAmount        = 39,
-	
+
 	kAmsynthParameter_PortamentoMode           = 40,
+
+	kAmsynthParameter_DelayWet                 = 41,
+	kAmsynthParameter_DelayFeedback            = 42,
+	kAmsynthParameter_DelayFrequency           = 43,
 
 	kAmsynthParameterCount
 } Param;

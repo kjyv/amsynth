@@ -639,6 +639,39 @@
         lv2:scalePoint [ rdf:value 0.0 ; rdfs:label "always"] ;
         lv2:scalePoint [ rdf:value 1.0 ; rdfs:label "legato"] ;
         pg:group <http://code.google.com/p/amsynth/amsynth#group_keyboard> ;
+    ] , [
+        a lv2:InputPort ,
+            lv2:ControlPort ;
+        lv2:index 45 ;
+        lv2:symbol "delay_wet" ;
+        lv2:name "Delay Wet" ;
+        lv2:portProperty epp:hasStrictBounds ;
+        lv2:default 0.000000 ;
+        lv2:minimum 0.000000 ;
+        lv2:maximum 1.000000 ;
+        pg:group <http://code.google.com/p/amsynth/amsynth#group_delay> ;
+    ] , [
+        a lv2:InputPort ,
+            lv2:ControlPort ;
+        lv2:index 46 ;
+        lv2:symbol "delay_tempo" ;
+        lv2:name "Delay Tempo" ;
+        lv2:portProperty epp:hasStrictBounds ;
+        lv2:default 0.000000 ;
+        lv2:minimum 0.000000 ;
+        lv2:maximum 1.000000 ;
+        pg:group <http://code.google.com/p/amsynth/amsynth#group_delay> ;
+    ] , [
+        a lv2:InputPort ,
+            lv2:ControlPort ;
+        lv2:index 47 ;
+        lv2:symbol "delay_feedback" ;
+        lv2:name "Delay Feedback" ;
+        lv2:portProperty epp:hasStrictBounds ;
+        lv2:default 0.000000 ;
+        lv2:minimum 0.000000 ;
+        lv2:maximum 1.000000 ;
+        pg:group <http://code.google.com/p/amsynth/amsynth#group_delay> ;
     ] .
 
 #presets

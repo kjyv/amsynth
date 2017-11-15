@@ -53,6 +53,12 @@ libdsp_sources = \
 	src/freeverb/revmodel.cpp \
 	src/freeverb/revmodel.hpp \
 	src/freeverb/tuning.h \
+	src/delay/common.h \
+	src/delay/delay.cpp \
+	src/delay/delay.h \
+	src/delay/memory.cpp \
+	src/delay/memory.h \
+	src/delay/utils.h \
 	src/Synthesizer.cpp \
 	src/Synthesizer.h \
 	src/TuningMap.cc \

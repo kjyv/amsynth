@@ -24,6 +24,7 @@
 #include "Effects/SoftLimiter.h"
 #include "Effects/Distortion.h"
 #include "freeverb/revmodel.hpp"
+#include "delay/delay.h"
 #include "VoiceBoard/VoiceBoard.h"
 
 #include <iostream>
@@ -32,10 +33,11 @@
 #include <assert.h>
 
 
+#define MAX_DELAY_SAMPLES 300000
+
 using namespace std;
 
 const unsigned kBufferSize = 1024;
-
 
 VoiceAllocationUnit::VoiceAllocationUnit ()
 :	mMaxVoices (0)
@@ -52,6 +54,8 @@ VoiceAllocationUnit::VoiceAllocationUnit ()
 {
 	limiter = new SoftLimiter;
 	reverb = new revmodel;
+	delay_l = new Delay(MAX_DELAY_SAMPLES);
+	delay_r = new Delay(MAX_DELAY_SAMPLES);
 	distortion = new Distortion;
 	mBuffer = new float [kBufferSize * 2];
 
@@ -61,7 +65,7 @@ VoiceAllocationUnit::VoiceAllocationUnit ()
 		active[i] = false;
 		_voices.push_back (new VoiceBoard);
 	}
-	
+
 	memset(&_keyPresses, 0, sizeof(_keyPresses));
 
 	SetSampleRate (44100);
@@ -72,6 +76,8 @@ VoiceAllocationUnit::~VoiceAllocationUnit	()
 	while (_voices.size()) { delete _voices.back(); _voices.pop_back(); }
 	delete limiter;
 	delete reverb;
+	delete delay_l;
+	delete delay_r;
 	delete distortion;
 	delete [] mBuffer;
 }
@@ -81,6 +87,8 @@ VoiceAllocationUnit::SetSampleRate	(int rate)
 {
 	limiter->SetSampleRate (rate);
 	for (unsigned i=0; i<_voices.size(); ++i) _voices[i]->SetSampleRate (rate);
+	delay_l->sampleRate = rate;
+	delay_r->sampleRate = rate;
 }
 
 void
@@ -98,7 +106,7 @@ VoiceAllocationUnit::HandleMidiNoteOn(int note, float velocity)
 	if (pitch < 0) { // unmapped key
 		return;
 	}
-	
+
 	float portamentoTime = mPortamentoTime;
 	if (mPortamentoMode == PortamentoModeLegato) {
 		int count = 0;
@@ -111,9 +119,9 @@ VoiceAllocationUnit::HandleMidiNoteOn(int note, float velocity)
 			portamentoTime = 0;
 		}
 	}
-	
+
 	keyPressed[note] = true;
-	
+
 	if (_keyboardMode == KeyboardModePoly) {
 
 		if (mMaxVoices) {
@@ -159,15 +167,15 @@ VoiceAllocationUnit::HandleMidiNoteOn(int note, float velocity)
 
 		if (_voices[note]->isSilent())
 			_voices[note]->reset();
-		
+
 		_voices[note]->setVelocity(velocity);
 		_voices[note]->triggerOn();
-		
+
 		active[note] = true;
 	}
-	
+
 	if (_keyboardMode == KeyboardModeMono || _keyboardMode == KeyboardModeLegato) {
-		
+
 		int previousNote = -1;
 		unsigned keyPress = 0;
 		for (int i = 0; i < 128; i++) {
@@ -178,15 +186,15 @@ VoiceAllocationUnit::HandleMidiNoteOn(int note, float velocity)
 		}
 
 		_keyPresses[note] = (++_keyPressCounter);
-		
+
 		VoiceBoard *voice = _voices[0];
-		
+
 		voice->setVelocity(velocity);
 		voice->setFrequency(voice->getFrequency(), pitch, portamentoTime);
-		
+
 		if (_keyboardMode == KeyboardModeMono || previousNote == -1)
 			voice->triggerOn();
-		
+
 		active[0] = true;
 	}
 
@@ -208,7 +216,7 @@ VoiceAllocationUnit::HandleMidiNoteOff(int note, float /*velocity*/)
 		}
 		_keyPresses[note] = 0;
 	}
-	
+
 	if (_keyboardMode == KeyboardModeMono || _keyboardMode == KeyboardModeLegato) {
 
 		int currentNote = -1;
@@ -219,9 +227,9 @@ VoiceAllocationUnit::HandleMidiNoteOff(int note, float /*velocity*/)
 				currentNote = i;
 			}
 		}
-		
+
 		_keyPresses[note] = 0;
-		
+
 		int nextNote = -1;
 		for (unsigned i = 0, keyPress = 0; i < 128; i++) {
 			if (keyPress < _keyPresses[i]) {
@@ -229,17 +237,17 @@ VoiceAllocationUnit::HandleMidiNoteOff(int note, float /*velocity*/)
 				nextNote = i;
 			}
 		}
-		
+
 		if (!keyPress) {
 			_keyPressCounter = 0;
 		}
-		
+
 		if (note != currentNote) {
 			return;
 		}
-		
+
 		VoiceBoard *voice = _voices[0];
-		
+
 		if (0 <= nextNote) {
 			voice->setFrequency(voice->getFrequency(), (float) noteToPitch(nextNote), mPortamentoTime);
 			if (_keyboardMode == KeyboardModeMono)
@@ -324,6 +332,8 @@ VoiceAllocationUnit::Process		(float *l, float *r, unsigned nframes, int stride)
 	}
 
 	reverb->processmix (l, r, l, r, nframes, stride);
+	delay_l->process(l, l, nframes, stride);
+	delay_r->process(r, r, nframes, stride);
 	limiter->Process (l,r, nframes, stride);
 }
 
@@ -349,6 +359,10 @@ VoiceAllocationUnit::UpdateParameter	(Param param, float value)
 	case kAmsynthParameter_PortamentoTime: 	mPortamentoTime = value; break;
 	case kAmsynthParameter_KeyboardMode:	setKeyboardMode((KeyboardMode)(int)value); break;
 	case kAmsynthParameter_PortamentoMode:	mPortamentoMode = (int) value; break;
+	case kAmsynthParameter_DelayWet:	    delay_l->setParamWet (value); delay_r->setParamWet (value); break;
+	case kAmsynthParameter_DelayFrequency:	delay_l->setParamFrequency(value); delay_r->setParamFrequency (value); break;
+	case kAmsynthParameter_DelayFeedback:	delay_l->setParamFeedback (value); delay_r->setParamFeedback (value); break;
+
 	default: for (unsigned i=0; i<_voices.size(); i++) _voices[i]->UpdateParameter (param, value); break;
 	}
 }

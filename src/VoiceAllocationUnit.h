@@ -33,6 +33,7 @@
 class VoiceBoard;
 class SoftLimiter;
 class revmodel;
+class Delay;
 class Distortion;
 
 
@@ -45,7 +46,7 @@ public:
 	void	UpdateParameter		(Param, float);
 
 	void	SetSampleRate		(int);
-	
+
 	virtual void HandleMidiNoteOn(int note, float velocity);
 	virtual void HandleMidiNoteOff(int note, float velocity);
 	virtual void HandleMidiPitchWheel(float value);
@@ -79,17 +80,19 @@ public:
 	int		mPortamentoMode;
 	bool	keyPressed[128], sustain;
 	bool	active[128];
-	
+
 	unsigned	_keyboardMode;
 	unsigned	_keyPresses[128];
 	unsigned	_keyPressCounter;
-	
+
 	std::vector<VoiceBoard*>	_voices;
-	
+
 	SoftLimiter	*limiter;
 	revmodel	*reverb;
+    Delay		*delay_l;
+    Delay		*delay_r;
 	Distortion	*distortion;
-	
+
 	float	*mBuffer;
 
 	float	mMasterVol;
