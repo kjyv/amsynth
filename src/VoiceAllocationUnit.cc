@@ -319,7 +319,7 @@ VoiceAllocationUnit::Process		(float *l, float *r, unsigned nframes, int stride)
 				active[i] = false;
 			} else {
 				_voices[i]->SetPitchBend(mPitchBendValue);
-				_voices[i]->ProcessSamplesMix (mBuffer, nframes, mMasterVol);
+				_voices[i]->ProcessSamplesMix (mBuffer, nframes, 1.0);
 			}
 		}
 	}
@@ -334,6 +334,10 @@ VoiceAllocationUnit::Process		(float *l, float *r, unsigned nframes, int stride)
 	reverb->processmix (l, r, l, r, nframes, stride);
 	delay_l->process(l, l, nframes, stride);
 	delay_r->process(r, r, nframes, stride);
+	for (unsigned i=0; i<nframes; i++) {
+		l[i * stride] = mBuffer[i] * mMasterVol;
+		r[i * stride] = mBuffer[i] * mMasterVol;
+	}
 	limiter->Process (l,r, nframes, stride);
 }
 
