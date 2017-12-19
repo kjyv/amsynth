@@ -36,7 +36,7 @@ void SmoothValue::process() {
         tick(i);
     }
 
-inline void SmoothValue::tick(int i) {
+void SmoothValue::tick(int i) {
     current_value_ = utils::interpolate(current_value_, target_value_, decay_);
 }
 

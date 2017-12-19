@@ -21,8 +21,8 @@
 #include "memory.h"
 #include "smooth_value.h"
 
-  // A signal delay processor with wet/dry, delay time and feedback controls.
-  // Handles fractional delay amounts through interpolation.
+// A signal delay processor with wet/dry, delay time and feedback controls.
+// Handles fractional delay amounts through interpolation.
 class Delay {
     public:
         Delay(int size);
