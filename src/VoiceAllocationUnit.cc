@@ -307,7 +307,7 @@ VoiceAllocationUnit::resetAllVoices()
 }
 
 void
-VoiceAllocationUnit::Process		(float *l, float *r, unsigned nframes, int stride)
+VoiceAllocationUnit::Process(float *l, float *r, unsigned nframes, int stride)
 {
 	assert(nframes <= VoiceBoard::kMaxProcessBufferSize);
 
@@ -331,9 +331,11 @@ VoiceAllocationUnit::Process		(float *l, float *r, unsigned nframes, int stride)
 		r[i * stride] = mBuffer[i] * mPanGainRight;
 	}
 
-	reverb->processmix (l, r, l, r, nframes, stride);
 	delay_l->process(l, l, nframes, stride);
 	delay_r->process(r, r, nframes, stride);
+
+	reverb->processmix (l, r, l, r, nframes, stride);
+
 	for (unsigned i=0; i<nframes; i++) {
 		l[i * stride] = l[i] * mMasterVol;
 		r[i * stride] = r[i] * mMasterVol;

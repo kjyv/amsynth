@@ -29,7 +29,6 @@
 #include <stdint.h>
 #include <vector>
 
-
 class VoiceBoard;
 class SoftLimiter;
 class revmodel;
@@ -89,8 +88,8 @@ public:
 
 	SoftLimiter	*limiter;
 	revmodel	*reverb;
-    Delay		*delay_l;
-    Delay		*delay_r;
+	Delay		*delay_l;
+	Delay		*delay_r;
 	Distortion	*distortion;
 
 	float	*mBuffer;

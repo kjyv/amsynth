@@ -58,6 +58,8 @@ libdsp_sources = \
 	src/delay/delay.h \
 	src/delay/memory.cpp \
 	src/delay/memory.h \
+	src/delay/smooth_value.h \
+	src/delay/smooth_value.cpp \
 	src/delay/utils.h \
 	src/Synthesizer.cpp \
 	src/Synthesizer.h \

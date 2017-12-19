@@ -15,21 +15,26 @@
  */
 
 #include "delay.h"
+#include <iostream>
+#include <fstream>
 
 #define DEFAULT_PERIOD 100.0
 
 Delay::Delay(int size) {
-  memory_ = new Memory(size);
-  current_feedback_ = new_feedback = 0.0;
-  current_wet_ = 0.0;
-  current_dry_ = 0.0;
-  current_period_ = DEFAULT_PERIOD;
-  sampleRate = 44100;
-  new_sample_delay = sampleRate * 0.0;
+    memory_ = new Memory(size);
+    current_feedback_ = new_feedback = 0.0;
+    current_wet_ = 0.0;
+    current_dry_ = 0.0;
+    current_period_ = DEFAULT_PERIOD;
+    sampleRate = 44100;
+    new_sample_delay = sampleRate * 0.0;
+    smooth_frequency_value = new SmoothValue(0.0);
+    smooth_frequency_value->setSampleRate(sampleRate);
 }
 
 Delay::~Delay() {
   delete memory_;
+  delete smooth_frequency_value;
 }
 
 void Delay::setParamWet(float value){
@@ -38,7 +43,8 @@ void Delay::setParamWet(float value){
 }
 
 void Delay::setParamFrequency(float value){
-    new_sample_delay = sampleRate * value;
+    //new_sample_delay = sampleRate * value;
+    smooth_frequency_value->set(sampleRate * value);
 }
 
 void Delay::setParamFeedback(float value){
@@ -46,30 +52,34 @@ void Delay::setParamFeedback(float value){
 }
 
 void Delay::process(float *audio, float* dest, unsigned buffer_size_, int stride) {
-	//float wet = utils::clamp(input(kWet)->at(0), 0.0, 1.0);
-	//float new_wet = sqrt(wet);
-	//float new_dry = sqrt(1.0 - wet);
-	//float wet_inc = (new_wet - current_wet_) / buffer_size_;
-	//float dry_inc = (new_dry - current_dry_) / buffer_size_;
+    //float wet = utils::clamp(input(kWet)->at(0), 0.0, 1.0);
+    //float new_wet = sqrt(wet);
+    //float new_dry = sqrt(1.0 - wet);
+    //float wet_inc = (new_wet - current_wet_) / buffer_size_;
+    //float dry_inc = (new_dry - current_dry_) / buffer_size_;
+    //float new_period = utils::clamp(new_sample_delay, 2.0f, memory_->getSize() - 1.0f);
+    //float period_inc = ((new_period - current_period_) / buffer_size_) * stride;
+    float feedback_inc = ((new_feedback - current_feedback_) / buffer_size_) * stride;
 
-	float feedback_inc = (new_feedback - current_feedback_) / buffer_size_*stride;
-	float new_period = utils::clamp(new_sample_delay, 2.0f, memory_->getSize() - 1.0f);
-	float period_inc = (new_period - current_period_) / buffer_size_*stride;
+    smooth_frequency_value->setBufferSize(buffer_size_ / stride);
 
-	for (int i = 0; i < buffer_size_; i+=stride) {
-		current_feedback_ += feedback_inc;
-		/*current_wet_ += wet_inc;
-		current_dry_ += dry_inc;
-		*/
-		current_period_ += period_inc;
-		tick(i, stride, audio, dest);
+    // parameter smoothing
+    for (uint i = 0; i < buffer_size_; i+=stride) {
+        current_feedback_ += feedback_inc;
+        /*current_wet_ += wet_inc;
+        current_dry_ += dry_inc;
+        current_period_ += period_inc;
+        */
+        smooth_frequency_value->tick(i);
+        current_period_ = smooth_frequency_value->value();
+        tick(i, audio, dest);
   }
 }
 
 //process one sample
-void Delay::tick(int i, int stride, float* audio, float* dest) {
-  float read = memory_->get(current_period_);
-  memory_->push(audio[i*stride] + read * current_feedback_);
-  dest[i*stride] = current_dry_ * audio[i*stride] + current_wet_ * read;
-  MOPO_ASSERT(std::isfinite(dest[i*stride]));
+void Delay::tick(int i, float* audio, float* dest) {
+    float read = memory_->get(current_period_);
+    memory_->push(audio[i] + read * current_feedback_);
+    dest[i] = current_dry_ * audio[i] + current_wet_ * read;
+    MOPO_ASSERT(std::isfinite(dest[i]));
 }
