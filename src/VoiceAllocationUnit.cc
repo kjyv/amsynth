@@ -87,8 +87,8 @@ VoiceAllocationUnit::SetSampleRate	(int rate)
 {
 	limiter->SetSampleRate (rate);
 	for (unsigned i=0; i<_voices.size(); ++i) _voices[i]->SetSampleRate (rate);
-	delay_l->sampleRate = rate;
-	delay_r->sampleRate = rate;
+	delay_l->setSampleRate(rate);
+	delay_r->setSampleRate(rate);
 }
 
 void

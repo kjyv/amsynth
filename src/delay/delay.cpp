@@ -15,26 +15,27 @@
  */
 
 #include "delay.h"
-#include <iostream>
-#include <fstream>
 
 #define DEFAULT_PERIOD 100.0
 
 Delay::Delay(int size) {
     memory_ = new Memory(size);
+    smooth_frequency_value = new SmoothValue(0.0);
     current_feedback_ = new_feedback = 0.0;
     current_wet_ = 0.0;
     current_dry_ = 0.0;
     current_period_ = DEFAULT_PERIOD;
-    sampleRate = 44100;
-    new_sample_delay = sampleRate * 0.0;
-    smooth_frequency_value = new SmoothValue(0.0);
-    smooth_frequency_value->setSampleRate(sampleRate);
+    setSampleRate(44100);
 }
 
 Delay::~Delay() {
   delete memory_;
   delete smooth_frequency_value;
+}
+
+void Delay::setSampleRate(float value){
+    sampleRate = value;
+    smooth_frequency_value->setSampleRate(sampleRate);
 }
 
 void Delay::setParamWet(float value){

@@ -25,11 +25,10 @@
   // Handles fractional delay amounts through interpolation.
 class Delay {
     public:
-        float sampleRate;
-
         Delay(int size);
         virtual ~Delay();
 
+        void setSampleRate(float value);
         void setParamWet(float value);
         void setParamFrequency(float value);
         void setParamFeedback(float value);
@@ -40,12 +39,12 @@ class Delay {
     protected:
         Memory* memory_;
         SmoothValue *smooth_frequency_value;
+        float sampleRate;
         float current_feedback_;
         float current_wet_;
         float current_dry_;
         float current_period_;
         float new_feedback;
-        float new_sample_delay;
 };
 
 #endif // DELAY_H
