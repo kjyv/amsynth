@@ -24,27 +24,27 @@
 // A signal delay processor with wet/dry, delay time and feedback controls.
 // Handles fractional delay amounts through interpolation.
 class Delay {
-    public:
-        Delay(int size);
-        virtual ~Delay();
+		public:
+				Delay(int size);
+				virtual ~Delay();
 
-        void setSampleRate(float value);
-        void setParamWet(float value);
-        void setParamFrequency(float value);
-        void setParamFeedback(float value);
+				void setSampleRate(float value);
+				void setParamWet(float value);
+				void setParamFrequency(float value);
+				void setParamFeedback(float value);
 
-        void process(float *audio, float* dest, unsigned buffer_size_, int stride);
-        void tick(int i, float* audio, float* dest);
+				void process(float *audio, float* dest, unsigned buffer_size_, int stride);
+				void tick(int i, float* audio, float* dest);
 
-    protected:
-        Memory* memory_;
-        SmoothValue *smooth_frequency_value;
-        float sampleRate;
-        float current_feedback_;
-        float current_wet_;
-        float current_dry_;
-        float current_period_;
-        float new_feedback;
+		protected:
+				Memory* memory_;
+				SmoothValue *smooth_frequency_value;
+				float sampleRate;
+				float current_feedback_;
+				float current_wet_;
+				float current_dry_;
+				float current_period_;
+				float new_feedback;
 };
 
 #endif // DELAY_H

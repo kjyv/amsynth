@@ -19,33 +19,34 @@
 #define SMOOTH_VALUE_H
 
 class SmoothValue {
-  public:
-    SmoothValue(float value = 0.0);
+	public:
+		SmoothValue(float value = 0.0);
 
-    void tick(int i);
-    void process();
-    void setSampleRate(int sample_rate);
-    void setBufferSize(int buffer_size);
+		void tick(int i);
+		void process();
+		void setSampleRate(int sample_rate);
+		void setBufferSize(int buffer_size);
+		int getBufferSize();
 
-    void set(float value) {
-        target_value_ = value;
-    }
+		void set(float value) {
+				target_value_ = value;
+		}
 
-    void setHard(float value) {
-        current_value_ = value;
-        target_value_ = value;
-    }
+		void setHard(float value) {
+				current_value_ = value;
+				target_value_ = value;
+		}
+		void computeDecay();
 
-    float value() const{ return current_value_; }
+		float value() const{ return current_value_; }
 
-  private:
-    void computeDecay();
-    float current_value_;
-    float target_value_;
-    float decay_;
-    int num_samples_;
-    int sample_rate_;
-    int buffer_size_;
+	private:
+		float current_value_;
+		float target_value_;
+		float decay_;
+		int num_samples_;
+		int sample_rate_;
+		int buffer_size_;
 };
 
 #endif // SMOOTH_VALUE_H
