@@ -168,7 +168,14 @@ lv2_run(LV2_Handle instance, uint32_t sample_count)
 			midi_event.offset_frames = ev->time.frames;
 			midi_event.buffer = (uint8_t *)(ev + 1);
 			midi_event.length = ev->body.size;
-			midi_events.push_back(midi_event);
+			
+			//skip midi cc messages (parameter values are set below)
+			switch (lv2_midi_message_type(midi_event.buffer)) {
+				case LV2_MIDI_MSG_CONTROLLER:
+						break;
+				default:
+						midi_events.push_back(midi_event);
+			}
 		}
 		if (lv2_atom_forge_is_object_type(&a->forge, ev->body.type)) {
 			const LV2_Atom_Object *obj = (const LV2_Atom_Object *) &ev->body;
