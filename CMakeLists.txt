@@ -20,6 +20,7 @@ add_compile_options(
         -DPACKAGE_URL="https://amsynth.github.io"
         -DPACKAGE_BUGREPORT="https://www.github.com/amsynth/amsynth/issues"
         -DPKGDATADIR="${PROJECT_SOURCE_DIR}/data"
+        -DWITH_OSS
 )
 
 add_compile_options(
@@ -30,9 +31,6 @@ add_compile_options(
 
 add_compile_options(
         -Wall
-        -Wno-reorder
-        -Wno-format-zero-length
-        -Wno-deprecated-declarations
         -Werror
 )
 
@@ -62,6 +60,11 @@ pkg_check_modules(LIBLO liblo)
 if (LIBLO_FOUND)
     include_directories(${LIBLO_INCLUDE_DIRS})
 endif (LIBLO_FOUND)
+
+pkg_check_modules(SNDFILE sndfile)
+if (SNDFILE_FOUND)
+    add_compile_options(-Dwith_sndfile)
+endif(SNDFILE_FOUND)
 
 #
 #
@@ -174,6 +177,7 @@ target_link_libraries(amsynth
         ${JACK_LIBRARIES}
         ${GTK_LIBRARIES}
         ${LASH_LIBRARIES}
+        ${SNDFILE_LIBRARIES}
         )
 
 #
