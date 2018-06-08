@@ -63,9 +63,9 @@ void Delay::process(float *audio, float* dest, unsigned buffer_size_, int stride
 		//float period_inc = ((new_period - current_period_) / buffer_size_) * stride;
 		float feedback_inc = ((new_feedback - current_feedback_) / buffer_size_) * stride;
 
-		if (smooth_frequency_value->getBufferSize() != int(buffer_size_ / stride)) {
-				smooth_frequency_value->setBufferSize(buffer_size_ / stride);
-				smooth_frequency_value->computeDecay();
+		if (smooth_frequency_value->getBufferSize() != int(buffer_size_ * stride)) {
+				smooth_frequency_value->setBufferSize(buffer_size_ * stride);
+				smooth_frequency_value->computeDecay(0.01f);
 		}
 
 		// parameter smoothing

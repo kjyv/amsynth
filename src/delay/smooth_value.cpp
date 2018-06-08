@@ -18,7 +18,7 @@
 #include <cmath>
 #include "utils.h"
 
-#define SMOOTH_CUTOFF 0.02f
+#define SMOOTH_CUTOFF 0.03f
 
 SmoothValue::SmoothValue(float value):
 		current_value_(value), target_value_(value), decay_(1.0) { }
@@ -47,6 +47,6 @@ int SmoothValue::getBufferSize() {
 		return buffer_size_;
 }
 
-void SmoothValue::computeDecay() {
-		decay_ = 1 - exp(-2.0 * PI * SMOOTH_CUTOFF * buffer_size_ / sample_rate_);
+void SmoothValue::computeDecay(float cutoff) {
+		decay_ = 1 - exp(-2.0 * PI * cutoff * buffer_size_ / sample_rate_);
 }

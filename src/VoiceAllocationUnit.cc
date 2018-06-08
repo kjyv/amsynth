@@ -341,7 +341,7 @@ VoiceAllocationUnit::Process(float *l, float *r, unsigned nframes, int stride)
 
 		if (mSmoothMasterVol->getBufferSize() != int(nframes / stride)) {
 				mSmoothMasterVol->setBufferSize(nframes / stride);
-				mSmoothMasterVol->computeDecay();
+				mSmoothMasterVol->computeDecay(0.05f);
 		}
 
 		for (unsigned i=0; i<nframes; i++) {

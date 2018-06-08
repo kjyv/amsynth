@@ -36,7 +36,7 @@ class SmoothValue {
 				current_value_ = value;
 				target_value_ = value;
 		}
-		void computeDecay();
+		void computeDecay(float cutoff);
 
 		float value() const{ return current_value_; }
 
