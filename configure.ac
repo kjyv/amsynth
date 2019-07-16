@@ -1,7 +1,7 @@
 dnl
 dnl  amsynth configure.ac
 dnl
-dnl  Copyright (C) 2001-2015 Nick Dowell
+dnl  Copyright (C) 2001-2018 Nick Dowell
 dnl
 dnl  This program is free software; you can redistribute it and/or modify
 dnl  it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@ dnl  along with this program; if not, write to the Free Software
 dnl  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 dnl
 
-AC_COPYRIGHT([Copyright (C) 2001-2015 Nick Dowell])
-AC_INIT([amsynth], [1.8.0], [https://github.com/amsynth/amsynth/issues], [amsynth], [https://amsynth.github.io])
-AC_CONFIG_SRCDIR([src/main.cc])
+AC_COPYRIGHT([Copyright (C) 2001-2018 Nick Dowell])
+AC_INIT([amsynth], [1.9.0], [https://github.com/amsynth/amsynth/issues], [amsynth], [https://amsynth.github.io])
+AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([subdir-objects])
@@ -43,6 +43,14 @@ AC_LANG(C++)
 
 IT_PROG_INTLTOOL
 
+# Because IT_PROG_INTLTOOL does not set ENABLE_NLS
+# - https://bugs.launchpad.net/intltool/+bug/1217976
+# And we cannot (yet) use AM_GNU_GETTEXT
+# - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=724555
+# - https://wiki.gnome.org/MigratingFromIntltoolToGettext
+# What a mess :-(
+AS_IF([test "$USE_NLS" = "yes"], [AC_DEFINE([ENABLE_NLS], [1], [Enable gettext])])
+
 GETTEXT_PACKAGE=amsynth
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
@@ -57,6 +65,17 @@ AC_CHECK_LIB(pthread, pthread_create, [], exit)
 
 AS_IF([test "x$with_gui" != "xno"],[PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.20.0])])
 
+AC_CHECK_HEADER([oscpack/ip/UdpSocket.h], [
+    AC_CHECK_HEADER([lo/lo.h], [
+        AC_CHECK_LIB([lo], [main], [
+            AC_MSG_RESULT([enabling NSM support])
+            AC_DEFINE([WITH_NSM], [], [Build NSM support])
+            with_nsm="yes"
+        ])
+    ])
+])
+AM_CONDITIONAL([BUILD_NSM], [test "x$with_nsm" == "xyes"])
+
 dnl ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 dnl
 dnl Optional packages
@@ -70,6 +89,7 @@ AS_IF([test "x$with_gui" != "xno"], [
        with_lv2="no"
        with_dssi_gui="no"])
 AM_CONDITIONAL([BUILD_GUI], [test "x$with_gui" != "xno"])
+AM_CONDITIONAL([BUILD_WITHOUT_GUI], [test "x$with_gui" != "xyes"])
 
 AC_ARG_WITH([oss], [AS_HELP_STRING([--with-oss], [build support for Open Sound System])])
 AS_IF([test "x$with_oss" != "xno"], [

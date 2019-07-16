@@ -1,5 +1,5 @@
 /*
- *  PresetControllerView.cc
+ *  PresetControllerView.cpp
  *
  *  Copyright (c) 2001-2012 Nick Dowell
  *
@@ -90,7 +90,7 @@ static GtkWidget * button_with_image(const gchar *stock_id, const gchar *label)
 static gboolean on_output(GtkSpinButton *spin, gpointer user_data)
 {
 	static const char *names[12] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-	gchar text[8];
+	gchar text[12];
 	gint value = gtk_spin_button_get_value_as_int (spin);
 	sprintf (text, "%s%d", names[value % 12], value / 12 - 1);
 	gtk_entry_set_text (GTK_ENTRY (spin), text);
@@ -160,7 +160,7 @@ void PresetControllerViewImpl::on_combo_changed (GtkWidget *widget, PresetContro
 
 	if (widget == that->bank_combo) {
 		gint bank = gtk_combo_box_get_active (GTK_COMBO_BOX (that->bank_combo));
-		const std::vector<BankInfo> banks = PresetController::getPresetBanks();
+		const std::vector<BankInfo> &banks = PresetController::getPresetBanks();
 		that->presetController->loadPresets(banks[bank].file_path.c_str());
 	}
 
@@ -227,7 +227,7 @@ void PresetControllerViewImpl::update()
 {
 	inhibit_combo_callback = true;
 
-	const std::vector<BankInfo> banks = PresetController::getPresetBanks();
+	const std::vector<BankInfo> &banks = PresetController::getPresetBanks();
 
 	char text [48] = "";
 

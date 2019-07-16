@@ -1,5 +1,5 @@
 /*
- *  Preset.cc
+ *  Preset.cpp
  *
  *  Copyright (c) 2001-2017 Nick Dowell
  *
@@ -226,10 +226,15 @@ void get_parameter_properties(int parameter_index, double *minimum, double *maxi
 
 /* this implements the C API in controls.h */
 
-static Preset _preset;
+static const Preset &_get_preset()
+{
+	static const Preset preset;
+	return preset;
+}
 
 const char *parameter_name_from_index (int param_index)
 {
+	const Preset &_preset = _get_preset();
 	if (param_index < 0 || param_index >= (int)_preset.ParameterCount())
 		return NULL;
 	static std::vector<std::string> names;
@@ -242,6 +247,7 @@ const char *parameter_name_from_index (int param_index)
 
 int parameter_index_from_name (const char *param_name)
 {
+	const Preset &_preset = _get_preset();
 	for (unsigned i=0; i<_preset.ParameterCount(); i++) {
 		if (std::string(param_name) == _preset.getParameter(i).getName()) {
 			return i;
@@ -252,6 +258,7 @@ int parameter_index_from_name (const char *param_name)
 
 int parameter_get_display (int parameter_index, float parameter_value, char *buffer, size_t maxlen)
 {
+	const Preset &_preset = _get_preset();
 	Parameter parameter = _preset.getParameter(parameter_index);
 	parameter.setValue(parameter_value);
 	float real_value = parameter.getControlValue();
@@ -315,7 +322,7 @@ int parameter_get_display (int parameter_index, float parameter_value, char *buf
 const char **parameter_get_value_strings (int parameter_index)
 {
     static std::vector<std::vector<const char *> > parameterStrings(kAmsynthParameterCount);
-    if (parameter_index < 0 || parameter_index >= parameterStrings.size())
+    if (parameter_index < 0 || parameter_index >= (int)parameterStrings.size())
         return NULL;
 
     std::vector<const char *> & strings = parameterStrings[parameter_index];
@@ -397,18 +404,19 @@ static std::vector<bool> s_ignoreParameter(kAmsynthParameterCount);
 
 bool Preset::shouldIgnoreParameter(int parameter)
 {
-	assert(parameter >= 0 && parameter < s_ignoreParameter.size());
+	assert(parameter >= 0 && parameter < (int)s_ignoreParameter.size());
 	return s_ignoreParameter[parameter];
 }
 
 void Preset::setShouldIgnoreParameter(int parameter, bool ignore)
 {
-	assert(parameter >= 0 && parameter < s_ignoreParameter.size());
+	assert(parameter >= 0 && parameter < (int)s_ignoreParameter.size());
 	s_ignoreParameter[parameter] = ignore;
 }
 
 std::string Preset::getIgnoredParameterNames()
 {
+	const Preset &_preset = _get_preset();
 	std::string names;
 	for (int i = 0; i < kAmsynthParameterCount; i++) {
 		if (shouldIgnoreParameter(i)) {

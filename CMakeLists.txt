@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 98)
 #set(CMAKE_VERBOSE_MAKEFILE true)
 
 find_package(PkgConfig REQUIRED)
@@ -71,9 +71,9 @@ endif(SNDFILE_FOUND)
 #
 
 add_library(amsynth_core STATIC
-        src/Effects/Distortion.cc
+        src/Effects/Distortion.cpp
         src/Effects/Distortion.h
-        src/Effects/SoftLimiter.cc
+        src/Effects/SoftLimiter.cpp
         src/Effects/SoftLimiter.h
         src/freeverb/allpass.cpp
         src/freeverb/allpass.hpp
@@ -83,38 +83,40 @@ add_library(amsynth_core STATIC
         src/freeverb/revmodel.cpp
         src/freeverb/revmodel.hpp
         src/freeverb/tuning.h
-        src/VoiceBoard/ADSR.cc
+        src/VoiceBoard/ADSR.cpp
         src/VoiceBoard/ADSR.h
-        src/VoiceBoard/LowPassFilter.cc
+        src/VoiceBoard/LowPassFilter.cpp
         src/VoiceBoard/LowPassFilter.h
-        src/VoiceBoard/Oscillator.cc
+        src/VoiceBoard/Oscillator.cpp
         src/VoiceBoard/Oscillator.h
         src/VoiceBoard/Synth--.h
-        src/VoiceBoard/VoiceBoard.cc
+        src/VoiceBoard/VoiceBoard.cpp
         src/VoiceBoard/VoiceBoard.h
         src/Configuration.cpp
         src/Configuration.h
         src/controls.h
+        src/filesystem.cpp
+        src/filesystem.h
         src/gettext.h
         src/lash.c
         src/lash.h
         src/midi.h
-        src/MidiController.cc
+        src/MidiController.cpp
         src/MidiController.h
-        src/Parameter.cc
+        src/Parameter.cpp
         src/Parameter.h
-        src/Preset.cc
+        src/Preset.cpp
         src/Preset.h
-        src/PresetController.cc
+        src/PresetController.cpp
         src/PresetController.h
         src/Synthesizer.cpp
         src/Synthesizer.h
         src/Thread.h
-        src/TuningMap.cc
+        src/TuningMap.cpp
         src/TuningMap.h
         src/types.h
         src/UpdateListener.h
-        src/VoiceAllocationUnit.cc
+        src/VoiceAllocationUnit.cpp
         src/VoiceAllocationUnit.h
         )
 
@@ -123,19 +125,19 @@ add_library(amsynth_core STATIC
 #
 
 add_executable(amsynth
-        src/drivers/ALSAAudioDriver.cc
+        src/drivers/ALSAAudioDriver.cpp
         src/drivers/ALSAAudioDriver.h
-        src/drivers/ALSAMidiDriver.cc
+        src/drivers/ALSAMidiDriver.cpp
         src/drivers/ALSAMidiDriver.h
-        src/drivers/ALSAmmapAudioDriver.cc
+        src/drivers/ALSAmmapAudioDriver.cpp
         src/drivers/ALSAmmapAudioDriver.h
         src/drivers/AudioDriver.h
-        src/drivers/CoreAudio.cc
+        src/drivers/CoreAudio.cpp
         src/drivers/CoreAudio.h
         src/drivers/MidiDriver.h
-        src/drivers/OSSAudioDriver.cc
+        src/drivers/OSSAudioDriver.cpp
         src/drivers/OSSAudioDriver.h
-        src/drivers/OSSMidiDriver.cc
+        src/drivers/OSSMidiDriver.cpp
         src/drivers/OSSMidiDriver.h
         src/GUI/bitmap_button.c
         src/GUI/bitmap_button.h
@@ -150,7 +152,7 @@ add_executable(amsynth
         src/GUI/editor_menus.h
         src/GUI/editor_pane.c
         src/GUI/editor_pane.h
-        src/GUI/gui_main.cc
+        src/GUI/gui_main.cpp
         src/GUI/gui_main.h
         src/GUI/MainMenu.cpp
         src/GUI/MainMenu.h
@@ -158,15 +160,22 @@ add_executable(amsynth
         src/GUI/MainWindow.h
         src/GUI/MIDILearnDialog.cpp
         src/GUI/MIDILearnDialog.h
-        src/GUI/PresetControllerView.cc
+        src/GUI/PresetControllerView.cpp
         src/GUI/PresetControllerView.h
-        src/AudioOutput.cc
+        src/nsm/DebugMessage.cpp
+        src/nsm/DebugMessage.h
+        src/nsm/nsm.h
+        src/nsm/NsmClient.cpp
+        src/nsm/NsmClient.h
+        src/nsm/NsmHandler.cpp
+        src/nsm/NsmHandler.h
+        src/AudioOutput.cpp
         src/AudioOutput.h
-        src/JackOutput.cc
+        src/JackOutput.cpp
         src/JackOutput.h
         src/lash.c
         src/lash.h
-        src/main.cc
+        src/main.cpp
         src/main.h
         )
 
@@ -178,6 +187,8 @@ target_link_libraries(amsynth
         ${GTK_LIBRARIES}
         ${LASH_LIBRARIES}
         ${SNDFILE_LIBRARIES}
+        ${LIBLO_LIBRARIES}
+        oscpack
         )
 
 #
@@ -201,7 +212,7 @@ add_executable(amsynth_dssi_gtk
         src/GUI/editor_menus.h
         src/GUI/editor_pane.c
         src/GUI/editor_pane.h
-        src/GUI/gui_main.cc
+        src/GUI/gui_main.cpp
         src/GUI/gui_main.h
         )
 
@@ -232,7 +243,7 @@ add_library(amsynth_lv2_gtk MODULE
         src/GUI/editor_menus.h
         src/GUI/editor_pane.c
         src/GUI/editor_pane.h
-        src/GUI/gui_main.cc
+        src/GUI/gui_main.cpp
         src/GUI/gui_main.h
         src/amsynth_lv2_ui_gtk.cpp
         )
@@ -254,7 +265,7 @@ add_library(amsynth_vst MODULE
         src/GUI/editor_menus.h
         src/GUI/editor_pane.c
         src/GUI/editor_pane.h
-        src/GUI/gui_main.cc
+        src/GUI/gui_main.cpp
         src/GUI/gui_main.h
         )
 target_compile_options(amsynth_vst PUBLIC -DWITH_GUI)

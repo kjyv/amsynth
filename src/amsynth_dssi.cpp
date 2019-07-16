@@ -73,6 +73,7 @@ typedef struct _amsynth_wrapper {
  *   available.  Each non-NULL return is the DSSI_Descriptor
  *   of a distinct plugin type.
  */
+__attribute__((visibility("default")))
 const DSSI_Descriptor *dssi_descriptor (unsigned long index)
 {
     switch (index)
@@ -135,7 +136,7 @@ static const DSSI_Program_Descriptor *get_program(LADSPA_Handle Instance, unsign
 	descriptor.Program = Index % PresetController::kNumPresets;
 	descriptor.Bank = Index / PresetController::kNumPresets;
 
-	const std::vector<BankInfo> banks = PresetController::getPresetBanks();
+	const std::vector<BankInfo> &banks = PresetController::getPresetBanks();
 	if (descriptor.Bank < banks.size())
 	{
 		if (descriptor.Bank != s_lastBankGet) {
@@ -156,7 +157,7 @@ static void select_program(LADSPA_Handle Instance, unsigned long Bank, unsigned 
 
 	TRACE_ARGS("Bank = %d Index = %d", Bank, Index);
 
-	const std::vector<BankInfo> banks = PresetController::getPresetBanks();
+	const std::vector<BankInfo> &banks = PresetController::getPresetBanks();
 
 	if (Bank < banks.size() && Index < PresetController::kNumPresets) {
 		s_presetController->loadPresets(banks[Bank].file_path.c_str());
